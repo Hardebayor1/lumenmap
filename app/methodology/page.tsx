@@ -3,6 +3,14 @@ import {
   METHODOLOGY_SECTIONS,
   METHODOLOGY_VERSION,
 } from "@/lib/metrics/methodology";
+import { FLOW_METHODOLOGY_ANCHORS } from "@/lib/metrics/flow-methodology-anchors";
+
+const FLOW_SUBSECTIONS = [
+  { id: FLOW_METHODOLOGY_ANCHORS.nodes, title: "Nodes" },
+  { id: FLOW_METHODOLOGY_ANCHORS.edges, title: "Edges" },
+  { id: FLOW_METHODOLOGY_ANCHORS.sampling, title: "Sampling and coverage" },
+  { id: FLOW_METHODOLOGY_ANCHORS.assetModes, title: "Asset modes" },
+] as const;
 
 export const metadata = {
   title: "Metric methodology · LumenMap",
@@ -45,6 +53,26 @@ export default function MethodologyPage() {
               </a>
             </li>
           ))}
+          <li>
+            <a
+              href={`#${FLOW_METHODOLOGY_ANCHORS.flow}`}
+              className="text-zinc-300 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stellar rounded-sm"
+            >
+              Payment-flow graph
+            </a>
+            <ul className="mt-2 flex flex-col gap-1 pl-4">
+              {FLOW_SUBSECTIONS.map((sub) => (
+                <li key={sub.id}>
+                  <a
+                    href={`#${sub.id}`}
+                    className="text-zinc-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stellar rounded-sm"
+                  >
+                    {sub.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
         </ul>
       </nav>
 
@@ -105,6 +133,123 @@ export default function MethodologyPage() {
             </div>
           </section>
         ))}
+
+        <section
+          id={FLOW_METHODOLOGY_ANCHORS.flow}
+          className="scroll-mt-24 space-y-5 rounded-xl border border-white/10 bg-black/20 p-5"
+        >
+          <h2 className="text-xl font-semibold text-white">Payment-flow graph</h2>
+          <p className="text-sm leading-relaxed text-zinc-300">
+            The Flow view draws value movement between Stellar accounts in the
+            selected period as a directed graph. It is a descriptive sample of
+            payment edges from Hubble, not a complete ledger of transfers and
+            not a measure of network health. The graph uses the same period,
+            inclusive time predicate, partial-period, and Hubble freshness
+            conventions as every other LumenMap metric.
+          </p>
+
+          <div id={FLOW_METHODOLOGY_ANCHORS.nodes} className="scroll-mt-24 space-y-2">
+            <h3 className="text-base font-semibold text-white">Nodes</h3>
+            <ul className="list-disc space-y-1 pl-4 text-sm text-zinc-300">
+              <li>
+                A node is one Stellar account ID that is the source or
+                destination of at least one edge in the rendered sample. Each
+                account appears once, however many edges touch it.
+              </li>
+              <li>
+                Labels come from entity directory data and fall back to a
+                shortened account ID. A label or category (exchange, protocol,
+                …) changes the display name only, never the node identity.
+              </li>
+              <li>
+                Node metrics are in/out operation counts, in/out degree
+                (distinct counterparties), and in/out volume per asset. Node
+                size and degree describe the sample only; they are not
+                network-wide totals for that account.
+              </li>
+            </ul>
+          </div>
+
+          <div id={FLOW_METHODOLOGY_ANCHORS.edges} className="scroll-mt-24 space-y-2">
+            <h3 className="text-base font-semibold text-white">Edges</h3>
+            <ul className="list-disc space-y-1 pl-4 text-sm text-zinc-300">
+              <li>
+                An edge points from the source account to the destination
+                account of a successful operation of type{" "}
+                <code className="font-mono text-xs">payment</code>,{" "}
+                <code className="font-mono text-xs">path_payment_strict_send</code>,{" "}
+                <code className="font-mono text-xs">path_payment_strict_receive</code>,{" "}
+                <code className="font-mono text-xs">create_account</code>{" "}
+                (funding edge), or{" "}
+                <code className="font-mono text-xs">account_merge</code>{" "}
+                (drain edge).
+              </li>
+              <li>
+                Operations between the same source and destination in the same
+                asset are collapsed into one edge whose amount and operation
+                count are the sums of those operations. The same account pair
+                can therefore have one edge per asset.
+              </li>
+              <li>
+                Failed operations, self-payments, rows without a source or
+                destination, and all other operation types (DEX offers,
+                liquidity-pool flows, fees, …) are not edges.
+              </li>
+              <li>
+                Edge amounts are not the Payment volume metric: that metric
+                counts direct <code className="font-mono text-xs">payment</code>{" "}
+                operations only, while the graph also shows path payments,
+                funding, and drains.
+              </li>
+            </ul>
+          </div>
+
+          <div id={FLOW_METHODOLOGY_ANCHORS.sampling} className="scroll-mt-24 space-y-2">
+            <h3 className="text-base font-semibold text-white">
+              Sampling and coverage
+            </h3>
+            <ul className="list-disc space-y-1 pl-4 text-sm text-zinc-300">
+              <li>
+                The graph renders the top-N edges of the period, ranked by
+                operation count and then by amount within the same asset.
+                Edges below the cut are omitted, along with nodes that only
+                they touched.
+              </li>
+              <li>
+                The coverage badge reports returned versus total edges and
+                returned versus total operations, and marks the graph as
+                sampled when edges were dropped. Read absences as “not in the
+                sample”, not “no activity”.
+              </li>
+              <li>
+                Hubble freshness applies: recent ledgers can be missing, and a
+                range containing the current day is partial and provisional.
+              </li>
+            </ul>
+          </div>
+
+          <div id={FLOW_METHODOLOGY_ANCHORS.assetModes} className="scroll-mt-24 space-y-2">
+            <h3 className="text-base font-semibold text-white">Asset modes</h3>
+            <ul className="list-disc space-y-1 pl-4 text-sm text-zinc-300">
+              <li>
+                Every edge is denominated in exactly one asset, identified by
+                asset code and issuer; native XLM is its own explicit bucket.
+                Asset modes (for example XLM or USDC) filter the graph to edges
+                of that asset.
+              </li>
+              <li>
+                Amounts in different assets are never summed. Edge thickness
+                and node volume are comparable only within one asset mode, and
+                an issued asset code is only meaningful together with its
+                issuer.
+              </li>
+              <li>
+                Amounts are in the asset&apos;s own units; the graph applies no
+                price or fiat conversion.
+              </li>
+            </ul>
+          </div>
+        </section>
       </div>
     </div>
   );

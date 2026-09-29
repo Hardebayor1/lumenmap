@@ -16,5 +16,12 @@ The interactive copy lives at [`/methodology`](/methodology). Section anchors:
 | Top category | `#top-category` |
 | Time basis | `#time-basis` |
 | Hubble freshness | `#hubble-freshness` |
+| Payment-flow graph | `#flow` |
+| Flow · nodes | `#flow-nodes` |
+| Flow · edges | `#flow-edges` |
+| Flow · sampling and coverage | `#flow-sampling` |
+| Flow · asset modes | `#flow-asset-modes` |
 
 Source of truth for section bodies: [`lib/metrics/methodology.ts`](../lib/metrics/methodology.ts).
+
+Payment-flow graph anchors are exported from [`lib/metrics/flow-methodology-anchors.ts`](../lib/metrics/flow-methodology-anchors.ts) so the Flow legend and coverage badge link to stable ids. The interpretation rules are summarised in [`metric-methodology.md`](./metric-methodology.md#payment-flow-graph).
