@@ -56,3 +56,43 @@ If a PR introduces visual differences exceeding 0.1% or causes horizontal clippi
 1. `npm run test:visual` fails with non-zero exit code.
 2. Side-by-side PNG diff artifacts are generated under `tests/visual/diffs/{width}px/{state}-diff.png`.
 3. If the visual change is intentional, run `npm run test:visual:update` and commit the updated baselines.
+
+---
+
+## Flow visual baseline
+
+Spec: `e2e/flow-visual.spec.ts` (Playwright `toHaveScreenshot`, runs as part of `npm run test:e2e` in the `e2e` CI workflow).
+
+- Captures the Flow fixture view at **1280x800** (desktop) and **390x844** (mobile).
+- Deterministic: fixture data (`LUMENMAP_DATA_SOURCE=fixture`), network isolated, `animations: "disabled"`, `contextOptions.reducedMotion: "reduce"`, fixed viewport/locale/timezone, volatile regions (freshness timestamps, `<time>`, `[data-volatile]`) masked.
+- The Flow view is located via `data-testid="flow-view"`, opened at `/?view=flow` (override with `FLOW_VISUAL_PATH=/some/path`).
+- **Until the Flow MVP (#287) renders `data-testid="flow-view"`, the tests skip** with an explicit message. Once the element exists and baselines are committed, any diff above 0.1% of pixels fails CI. With the element present but no baseline committed, Playwright fails with "snapshot doesn't exist" (and writes the actual image), so baselines must be added in the same PR that lands the Flow view.
+
+Baselines live next to the spec in `e2e/flow-visual.spec.ts-snapshots/` and are platform-suffixed (e.g. `flow-desktop-1280-chromium-linux.png`).
+
+### Generating / updating baselines
+
+Font rendering differs between macOS and Linux, so baselines **must be generated in the same environment as CI** (Ubuntu). Use the Playwright Docker image matching the installed `@playwright/test` version:
+
+```bash
+docker run --rm --ipc=host -v "$PWD":/work -w /work \
+  mcr.microsoft.com/playwright:v$(node -p "require('@playwright/test/package.json').version")-jammy \
+  bash -c "npm ci && npm run build && npx playwright test e2e/flow-visual.spec.ts --update-snapshots"
+```
+
+Then commit the `*-linux.png` files. On a Linux host matching CI you can run directly:
+
+```bash
+npx playwright test e2e/flow-visual.spec.ts --update-snapshots
+```
+
+Running locally on macOS produces `*-darwin.png` files; do not commit them.
+
+### Verifying the guard
+
+1. With baselines committed, add an intentional break, e.g. in `app/globals.css`:
+   ```css
+   [data-testid="flow-view"] { padding-left: 40px !important; }
+   ```
+2. Run `npx playwright test e2e/flow-visual.spec.ts` (inside the Docker image above) — it must fail and write expected/actual/diff images to `test-results/`.
+3. Revert the CSS change; the spec passes again.
