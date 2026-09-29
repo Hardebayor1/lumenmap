@@ -43,5 +43,55 @@
     "name": "Soroswap Router",
     "category": "defi",
     "protocol": "Soroswap"
+  },
+  "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47": {
+    "name": "ThreeFold TFT Issuer",
+    "category": "issuer",
+    "protocol": "ThreeFold"
+  },
+  "GDC7X2MXTYSAKUUGAIQ7J7RPEIM7GXSAIWFYWWH4GLNFECQVJJLB2EEU": {
+    "name": "AUDD Issuer",
+    "category": "issuer",
+    "protocol": "AUDD"
+  },
+  "GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV": {
+    "name": "Glo Dollar USDGLO Issuer",
+    "category": "issuer",
+    "protocol": "Glo Dollar"
+  },
+  "GCBNWTCCMC32UHZ5OCC2PNMFDGXRVPA7MFFBFFTCVW77SX5PMRB7Q4BY": {
+    "name": "Mesh mZAR Issuer",
+    "category": "issuer",
+    "protocol": "Mesh"
+  },
+  "GDHDC4GBNPMENZAOBB4NCQ25TGZPDRK6ZGWUGSI22TVFATOLRPSUUSDM": {
+    "name": "Montelibero USDM Issuer",
+    "category": "issuer",
+    "protocol": "Montelibero"
+  },
+  "GBX6YI45VU7WNAAKA3RBFDR3I3UKNFHTJPQ5F6KOOKSGYIAM4TRQN54W": {
+    "name": "Afreum AFR Issuer",
+    "category": "issuer",
+    "protocol": "Afreum"
+  },
+  "GBZVELEQD3WBN3R3VAG64HVBDOZ76ZL6QPLSFGKWPFED33Q3234NSLVR": {
+    "name": "MintX Silver Gram (SLVR) Issuer",
+    "category": "issuer",
+    "protocol": "MintX"
+  },
+  "GBC5ZGK6MQU3XG5Y72SXPA7P5R5NHYT2475SNEJB2U3EQ6J56QLVGOLD": {
+    "name": "MintX Gold Gram (GOLD) Issuer",
+    "category": "issuer",
+    "protocol": "MintX"
+  },
+  "GDKA6WVMFSA73BMEVKPO6WXSSWP4MPRBDJVSXLLSEVIEVH226L5RJ7NL": {
+    "name": "Lumenaire xLMNR Issuer",
+    "category": "issuer",
+    "protocol": "Lumenaire"
+  },
+  "GBE6IZPK5MPLVPMD3NZ2YW5BY4GBB5IDYDXTIERGA3A5S2XANCUCTXLD": {
+    "name": "XLM Domains XLD Issuer",
+    "category": "issuer",
+    "protocol": "XLM Domains"
   }
 }
